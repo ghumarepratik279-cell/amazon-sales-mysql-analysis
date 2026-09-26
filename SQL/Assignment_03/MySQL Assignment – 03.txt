@@ -1,0 +1,89 @@
+-- MySQL Assignment – 3
+
+-- Q1
+INSERT INTO employees
+(employee_id, first_name, last_name, job_id, salary, manager_id, department_id)
+VALUES
+(100, 'Steven', 'King', 1, 24000.00, 200, 10),
+(101, 'Neena', 'Kochhar', 2, 17000.00, 200, 10),
+(102, 'Lex', 'De Haan', 2, 17000.00, 200, 10),
+(103, 'Alexander', 'Hunold', 3, 9000.00, 103, 60),
+(104, 'Bruce', 'Ernst', 3, 6000.00, 103, 60),
+(105, 'David', 'Austin', 3, 4800.00, 103, 60),
+(106, 'Valli', 'Pataballa', 3, 4800.00, 103, 60),
+(107, 'Diana', 'Lorentz', 3, 4200.00, 114, 30),
+(108, 'Nancy', 'Greenberg', 4, 12000.00, 145, 80),
+(109, 'Daniel', 'Faviet', 4, 9000.00, 145, 80);
+
+
+-- Q2
+INSERT INTO departments
+(department_id, department_name, manager_id, location_id)
+VALUES
+(10, 'Administration', 200, 1700),
+(20, 'Marketing', 201, 1800),
+(30, 'Purchasing', 114, 1700);
+
+
+-- Q3
+INSERT INTO jobs
+(job_id, job_title, min_salary, max_salary)
+VALUES
+(5, 'Database Administrator', 8000, 20000);
+
+
+-- Q4
+UPDATE employees
+SET salary = salary * 1.10;
+
+
+-- Q5
+UPDATE employees
+SET email = 'not available'
+WHERE department_id = 80
+AND commission_pct < 0.20;
+
+
+-- Q6
+UPDATE employees
+SET email = 'not available'
+WHERE department_id = (
+    SELECT department_id
+    FROM departments
+    WHERE department_name = 'Purchasing'
+);
+
+
+-- Q7
+UPDATE employees
+SET email = 'not available',
+    commission_pct = 0.10;
+
+
+-- Q8
+UPDATE employees
+SET salary = salary + 2000
+WHERE department_id = 60;
+
+
+-- Q9
+DELETE FROM employees
+WHERE salary < 5000;
+
+
+-- Q10
+INSERT INTO employees
+(employee_id, first_name, last_name, job_id, salary, manager_id, department_id)
+VALUES
+(110, 'Rahul', 'Sharma', 3, 7000.00, 103, 60);
+
+
+-- Q11
+UPDATE employees
+SET manager_id = 300
+WHERE department_id = 80;
+
+
+-- Q12
+DELETE FROM departments
+WHERE department_id = 20;

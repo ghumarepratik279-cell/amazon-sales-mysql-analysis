@@ -1,0 +1,176 @@
+MySQL Assignment - 2
+
+Q1)
+CREATE TABLE Member (
+    Member_Id INT,
+    Member_Name VARCHAR(30),
+    Member_Address VARCHAR(50),
+    Acc_Open_Date DATE,
+    Membership_Type VARCHAR(20),
+    Fees_Paid DECIMAL(10,2),
+    Max_Books_Allowed INT,
+    Penalty_Amount DECIMAL(10,2)
+);
+
+CREATE TABLE Books (
+    Book_No INT,
+    Book_Name VARCHAR(30),
+    Author_Name VARCHAR(30),
+    Cost DECIMAL(10,2),
+    Category VARCHAR(15)
+);
+
+CREATE TABLE Issue (
+    Lib_Issue_Id INT,
+    Book_No INT,
+    Member_Id INT,
+    Issue_Date DATE,
+    Return_Date DATE
+);
+
+Q2)
+DESC Member;
+DESC Books;
+DESC Issue;
+
+Q3)
+DROP TABLE Member;
+
+Q4)
+CREATE TABLE Member (
+    Member_Id INT PRIMARY KEY,
+    Member_Name VARCHAR(30),
+    Member_Address VARCHAR(50),
+    Acc_Open_Date DATE,
+    Membership_Type VARCHAR(20) CHECK (Membership_Type IN ('Lifetime', 'Annual', 'Half Yearly', 'Quarterly')),
+    Fees_Paid DECIMAL(10,2),
+    Max_Books_Allowed INT,
+    Penalty_Amount DECIMAL(10,2)
+);
+
+Q5)
+ALTER TABLE Member
+MODIFY Member_Name VARCHAR(40);
+
+Q6)
+ALTER TABLE Issue
+ADD Reference VARCHAR(30);
+
+Q7)
+ALTER TABLE Issue
+DROP COLUMN Reference;
+
+Q8)
+RENAME TABLE Issue TO Lib_Issue;
+
+Q9)
+INSERT INTO Member VALUES
+(1, 'Richa Sharma', 'Pune', '2005-12-10', 'Lifetime', 25000, 5, 50),
+(2, 'Garima Sen', 'Pune', CURDATE(), 'Annual', 1000, 3, NULL);
+
+Q10)
+INSERT INTO Member VALUES
+(3, 'Amit Patel', 'Mumbai', '2021-01-15', 'Annual', 1000, 3, 0),
+(4, 'Priya Singh', 'Delhi', '2022-03-20', 'Half Yearly', 600, 2, 100),
+(5, 'Rahul Verma', 'Pune', '2023-05-10', 'Quarterly', 300, 2, 0),
+(6, 'Sneha Roy', 'Kolkata', '2023-08-12', 'Lifetime', 25000, 5, 0),
+(7, 'Vikas Kumar', 'Bangalore', '2024-02-01', 'Annual', 1000, 3, 25);
+
+Q11)
+ALTER TABLE Member
+MODIFY Member_Name VARCHAR(20);
+-- Reason: If existing values in Member_Name exceed 20 characters, MySQL throws an error: "Data truncated for column 'Member_Name'".
+
+Q12)
+ALTER TABLE Member
+ADD CONSTRAINT chk_max_books CHECK (Max_Books_Allowed < 100);
+
+Q13)
+CREATE TABLE MemberBackup AS
+SELECT * FROM Member;
+
+Q14)
+ALTER TABLE Member
+ADD CONSTRAINT chk_max_books_allowed CHECK (Max_Books_Allowed < 100),
+ADD CONSTRAINT chk_penalty_amount CHECK (Penalty_Amount <= 1000);
+
+Q15)
+DROP TABLE Books;
+
+Q16)
+CREATE TABLE Books (
+    Book_No INT PRIMARY KEY,
+    Book_Name VARCHAR(30) NOT NULL,
+    Author_Name VARCHAR(30),
+    Cost DECIMAL(10,2),
+    Category VARCHAR(15) CHECK (Category IN ('System', 'Fiction', 'Database', 'RDBMS', 'Others', 'Science'))
+);
+
+Q17)
+INSERT INTO Books VALUES
+(101, 'Let Us C', 'Denis Ritchie', 450, 'System'),
+(102, 'Oracle Complete Ref', 'Loni', 550, 'Database'),
+(103, 'Mastering SQL', 'Loni', 250, 'Database'),
+(104, 'PL SQL Ref', 'Scott Urman', 750, 'Database'),
+(105, 'National Geographic', 'Adis Scott', 1000, 'Science');
+
+Q18)
+INSERT INTO Books VALUES
+(106, 'Java Complete Ref', 'Herbert Schildt', 650, 'Others'),
+(107, 'Database Concepts', 'Korth', 500, 'Database'),
+(108, 'Introduction to Algorithms', 'Cormen', 900, 'System'),
+(109, 'Operating Systems', 'Silberschatz', 700, 'System'),
+(110, 'Fundamentals of RDBMS', 'Elmasri', 600, 'RDBMS');
+
+Q19)
+SELECT * FROM Member;
+SELECT * FROM Books;
+
+Q20)
+DROP TABLE Lib_Issue;
+
+Q21)
+CREATE TABLE Issue (
+    Lib_Issue_Id INT PRIMARY KEY,
+    Book_No INT,
+    Member_Id INT,
+    Issue_Date DATE,
+    Return_Date DATE,
+    FOREIGN KEY (Book_No) REFERENCES Books(Book_No),
+    FOREIGN KEY (Member_Id) REFERENCES Member(Member_Id)
+);
+
+Q22)
+INSERT INTO Issue (Lib_Issue_Id, Book_No, Member_Id, Issue_Date) VALUES
+(7001, 101, 1, '2024-12-10'),
+(7002, 102, 2, '2024-12-25'),
+(7003, 104, 1, '2025-01-15'),
+(7004, 101, 1, '2025-02-04'),
+(7005, 104, 2, '2025-03-15');
+
+Q23)
+INSERT INTO Issue (Lib_Issue_Id, Book_No, Member_Id, Issue_Date) VALUES
+(7006, 101, 13, '2025-04-18');
+-- Error: ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`database`.`issue`, CONSTRAINT `issue_ibfk_2` FOREIGN KEY (`Member_Id`) REFERENCES `member` (`Member_Id`))
+
+Q24)
+DELETE FROM Member WHERE Member_Id = 1;
+-- Error: ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`database`.`issue`, CONSTRAINT `issue_ibfk_2` FOREIGN KEY (`Member_Id`) REFERENCES `member` (`Member_Id`))
+
+Q25)
+UPDATE Issue
+SET Return_Date = DATE_ADD(Issue_Date, INTERVAL 15 DAY)
+WHERE Lib_Issue_Id IN (7004, 7005);
+
+Q26)
+DELETE FROM Issue
+WHERE Member_Id = 1 AND Issue_Date < '2006-12-10';
+
+Q27)
+DELETE FROM Books
+WHERE Category NOT IN ('Database', 'RDBMS');
+
+Q28)
+DROP TABLE Issue;
+DROP TABLE Member;
+DROP TABLE Books;
